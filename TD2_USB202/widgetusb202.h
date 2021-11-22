@@ -17,5 +17,11 @@ public:
 
 private:
     Ui::WidgetUSB202 *ui;
+    void onTimerBp_timeOut();
+    void on_checkBox_LED1_stateChanged(int arg1);
+    void on_checkBox_LED2_stateChanged(int arg1);
+    void on_checkBox_LED3_stateChanged(int arg1);
+    void on_checkBox_LED4_stateChanged(int arg1);
+
 };
 #endif // WIDGETUSB202_H
