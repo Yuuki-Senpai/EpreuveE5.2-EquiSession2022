@@ -7,9 +7,10 @@ class Capot : public QObject
 {
     Q_OBJECT
 public:
-    explicit Capot(MccUldaq &laCarte,int _numDio,QObject *parent = nullptr);
+    explicit Capot(MccUldaq &_laCarte,int _numDio,QObject *parent = nullptr);
 
 private:
+    MccUldaq &laCarte;
     bool etatCapot;
     int numDio;
 

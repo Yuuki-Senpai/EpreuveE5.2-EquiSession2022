@@ -1,7 +1,8 @@
 #include "capot.h"
 
 
-Capot::Capot(MccUldaq &laCarte, int _numDio, QObject *parent):numDio(_numDio)
+
+Capot::Capot(MccUldaq &_laCarte, int _numDio, QObject *parent):laCarte(_laCarte),numDio(_numDio)
 {
 
 }
