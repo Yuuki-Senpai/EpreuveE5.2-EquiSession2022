@@ -4,7 +4,7 @@
 #include <QTimer>
 #include <QObject>
 #include "mcculdaq.h"
-
+#define TEMPO_CAPOT 500
 class Capot : public QObject
 {
     Q_OBJECT

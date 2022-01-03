@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include "mcculdaq.h"
 #include "capot.h"
+#include "moteur.h"
 #include <QLabel>
 QT_BEGIN_NAMESPACE
 namespace Ui { class Equilibreuse; }
@@ -14,14 +15,20 @@ class Equilibreuse : public QMainWindow
     Q_OBJECT
 
 public:
-    Equilibreuse(Capot *_leCapot, MccUldaq *_laCarte, QWidget *parent = nullptr);
+    Equilibreuse(QWidget *parent = nullptr);
     ~Equilibreuse();
+
+private slots:
+    void on_pushButton_Arreter_clicked();
+    void on_pushButton_Lancer_clicked();
+public slots:
+    void OnEtatCapotChange(bool _etat);
 
 private:
     Ui::Equilibreuse *ui;
     MccUldaq *laCarte;
     Capot *leCapot;
-    void OnEtatCapotChange(bool _etat);
+    Moteur *leMoteur;
     QLabel labelEtatCapot;
 
 };
