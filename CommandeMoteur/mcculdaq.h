@@ -1,4 +1,4 @@
-#ifndef MCCULDAQ_H
+﻿#ifndef MCCULDAQ_H
 #define MCCULDAQ_H
 
 #include <QtGlobal>

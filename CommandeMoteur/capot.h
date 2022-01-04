@@ -1,25 +1,30 @@
 #ifndef CAPOT_H
 #define CAPOT_H
 
-#include <QTimer>
 #include <QObject>
+#include <QTimer>
 #include "mcculdaq.h"
-#define TEMPO_CAPOT 500
+
+
+
 class Capot : public QObject
 {
     Q_OBJECT
-private:
-    bool etatCapot;
-    int numDio;
-     MccUldaq &laCarte;
-     QTimer timerCapot;
-
 public:
-    explicit Capot( MccUldaq &_laCarte, int _numDio, QObject *parent = nullptr);
-    void onTimerCapot_Timeout();
+    explicit Capot(MccUldaq &_laCarte, const int _numDio, QObject *parent = nullptr);
+    bool getEtatCapot() const;
 
 signals:
-    void EtatCapotChange(bool etat);
+    void EtatCapotChange(bool _etat);
+
+private slots:
+    void onTimerCapot_timeout();
+
+private:
+    MccUldaq &laCarte;
+    QTimer timerCapot;
+    const int numDio;
+    bool etatCapot;
 };
 
 #endif // CAPOT_H

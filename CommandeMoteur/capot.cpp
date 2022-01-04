@@ -1,24 +1,39 @@
 #include "capot.h"
+#include "constantes.h"
+#include <QDebug>
 
-Capot::Capot( MccUldaq &_laCarte, int _numDio, QObject *parent) : QObject(parent),
-    numDio(_numDio),
-    laCarte(_laCarte)
+
+Capot::Capot(MccUldaq &_laCarte, const int _numDio, QObject *parent):
+    QObject(parent),
+    laCarte(_laCarte),
+    numDio(_numDio)
 {
-
-    laCarte.ulDConfigBit(numDio,DD_INPUT);
-    laCarte.ulDBitIn(numDio,etatCapot);
-    connect(&timerCapot,&QTimer::timeout,this,&Capot::onTimerCapot_Timeout);
-    timerCapot.start(TEMPO_CAPOT);
+    UlError erreur;
+    erreur = laCarte.ulDConfigBit(numDio,DD_INPUT);
+    if(erreur == ERR_NO_ERROR)
+    {
+        erreur = laCarte.ulDBitIn(numDio,etatCapot);
+        timerCapot.start(TEMPO_CAPOT);
+    }
+    connect(&timerCapot,&QTimer::timeout,this,&Capot::onTimerCapot_timeout);
+    qDebug() << "Code erreur MccUldaq : " << erreur ;
 }
 
-void Capot::onTimerCapot_Timeout()
+void Capot::onTimerCapot_timeout()
 {
-   bool etatCourant;
-    laCarte.ulDBitIn(numDio,etatCourant);
-    if(etatCourant !=etatCapot)
+    bool etatCourant;
+    UlError erreur;
+    erreur = laCarte.ulDBitIn(numDio,etatCourant);
+    if(etatCapot != etatCourant)
     {
         emit EtatCapotChange(etatCourant);
         etatCapot = etatCourant;
     }
-
+    qDebug() << "Code erreur MccUldaq : " << erreur ;
 }
+
+bool Capot::getEtatCapot() const
+{
+    return etatCapot;
+}
+

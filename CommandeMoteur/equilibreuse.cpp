@@ -1,54 +1,71 @@
 #include "equilibreuse.h"
 #include "ui_equilibreuse.h"
-
+#include "constantes.h"
+#include <QMessageBox>
 
 Equilibreuse::Equilibreuse(QWidget *parent)
-    : QMainWindow(parent),
-      ui(new Ui::Equilibreuse)
-
+    : QMainWindow(parent)
+    , ui(new Ui::Equilibreuse)
 {
-    laCarte = new MccUldaq();
-    leCapot = new Capot(*laCarte,0,this);
-    leMoteur = new Moteur(*laCarte,0);
-
-    connect(leCapot,&Capot::EtatCapotChange,this,&Equilibreuse::OnEtatCapotChange);
-    ui->statusbar->addPermanentWidget(&labelEtatCapot);
     ui->setupUi(this);
+    ui->statusbar->addPermanentWidget(&labelEtatCapot);
+    leCapot = new Capot(laCarte, DIO0);
+    connect(leCapot,&Capot::EtatCapotChange,this,&Equilibreuse::onCapot_EtatCapotChange);
+    leMoteur = new Moteur(laCarte, AOUT0);
+    onCapot_EtatCapotChange(leCapot->getEtatCapot());
+    leCodeur = new Codeur(laCarte,0);
 }
 
 Equilibreuse::~Equilibreuse()
 {
-    delete [] laCarte;
-    delete [] leCapot;
-    delete [] leMoteur;
     delete ui;
+    delete leCapot;
 }
 
-void Equilibreuse::OnEtatCapotChange(bool _etat)
+void Equilibreuse::onCapot_EtatCapotChange(bool _etat)
 {
+    /* 1ère partie de la question
+    QMessageBox message;
+    QString etat = "ouvert";
+    if(_etat)
+        etat = "fermé";
+    message.setText("Le capot est " + etat);
+    message.exec();
+    */
+
     QPalette palette;
     labelEtatCapot.setAutoFillBackground(true);
     if(_etat)
     {
         palette.setColor(QPalette::WindowText,Qt::black);
         labelEtatCapot.setPalette(palette);
-        labelEtatCapot.setText("| Capot fermé |");
+        labelEtatCapot.setText("| Capot fermé|");
     }
     else
     {
         palette.setColor(QPalette::WindowText,Qt::red);
         labelEtatCapot.setPalette(palette);
         labelEtatCapot.setText("| Capot ouvert |");
+        on_pushButton_Arreter_clicked();
     }
 }
 
 
-void Equilibreuse::on_pushButton_Arreter_clicked()
-{
-
-}
 
 void Equilibreuse::on_pushButton_Lancer_clicked()
 {
-
+    if(ui->pushButton_Lancer->text()=="Lancer Moteur")
+    {
+        ui->pushButton_Lancer->setText("Fixer consigne");
+    }
+    leMoteur->FixerConsigneVitesse(ui->dial_ConsigneVItesse->value());
 }
+
+void Equilibreuse::on_pushButton_Arreter_clicked()
+{
+       ui->pushButton_Lancer->setText("Lancer Moteur");
+       leMoteur->FixerConsigneVitesse(0);
+       ui->dial_ConsigneVItesse->setValue(0);
+}
+
+

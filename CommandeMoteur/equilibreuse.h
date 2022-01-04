@@ -2,10 +2,12 @@
 #define EQUILIBREUSE_H
 
 #include <QMainWindow>
+#include <QLabel>
 #include "mcculdaq.h"
 #include "capot.h"
 #include "moteur.h"
-#include <QLabel>
+#include "codeur.h"
+
 QT_BEGIN_NAMESPACE
 namespace Ui { class Equilibreuse; }
 QT_END_NAMESPACE
@@ -18,18 +20,23 @@ public:
     Equilibreuse(QWidget *parent = nullptr);
     ~Equilibreuse();
 
-private slots:
-    void on_pushButton_Arreter_clicked();
-    void on_pushButton_Lancer_clicked();
 public slots:
-    void OnEtatCapotChange(bool _etat);
+    void onCapot_EtatCapotChange(bool _etat);
+
+
+private slots:
+    void on_pushButton_Lancer_clicked();
+    void on_pushButton_Arreter_clicked();
+
 
 private:
     Ui::Equilibreuse *ui;
-    MccUldaq *laCarte;
+    MccUldaq laCarte;
     Capot *leCapot;
-    Moteur *leMoteur;
+    Codeur *leCodeur;
+
     QLabel labelEtatCapot;
 
+    Moteur *leMoteur;
 };
 #endif // EQUILIBREUSE_H
